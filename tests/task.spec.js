@@ -26,16 +26,10 @@ test.describe('Demoblaze E-Commerce User Flow', () => {
     await page.fill('#sign-password', randomPassword);
     await page.waitForTimeout(3000);
 
-    // Handle the browser alert that appears upon successful registration
-    // page.once('dialog', async dialog => {
-    //   expect(dialog.message()).toContain('Sign up successful.');
-    //   await dialog.accept();
-    // });
-
     // Click Sign up button
     await page.click('#signInModal .btn-primary');
-
     await page.waitForTimeout(3000);
+
 
     // Log in using the newly created account
     await page.locator('#login2').click();
@@ -47,6 +41,28 @@ test.describe('Demoblaze E-Commerce User Flow', () => {
 
     // Verifying login through the navbar
     await expect(page.locator('#logout2')).toBeVisible();
+
+
+    // Click on the 'Laptops' category in the sidebar
+    await page.click("text=Laptops");
+
+    // Wait for products to load and click the first laptop
+    const firstLaptop = page.locator('.card-title a').first();
+    await expect(firstLaptop).toBeVisible({ timeout: 1000 });
+    const laptopName = await firstLaptop.textContent();
+    await firstLaptop.click();
+
+    // On the product page, click "Add to cart"
+    await expect(page.locator('.name')).toBeVisible();
+    await page.click('text=Add to cart');
+
+    // Navigate to the Cart page via navbar
+    await page.click('#cartur');
+    await expect(page.locator('.success-order, #page-wrapper')).toBeVisible();
+
+    // Verify the item is listed in the cart table
+    const cartItem = page.locator(`td:has-text("${laptopName?.trim()}")`);
+    await expect(cartItem).toBeVisible();
   });
 
 });
