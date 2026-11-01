@@ -24,7 +24,7 @@ test.describe('Demoblaze E-Commerce User Flow', () => {
     // Fill in credentials
     await page.fill('#sign-username', randomUsername);
     await page.fill('#sign-password', randomPassword);
-    await page.waitForTimeout(3000);
+    await page.waitForTimeout(1000);
 
     // Click Sign up button
     await page.click('#signInModal .btn-primary');
@@ -40,6 +40,8 @@ test.describe('Demoblaze E-Commerce User Flow', () => {
     await page.click('#logInModal .btn-primary');
 
     // Verifying login through the navbar
+    await page.waitForTimeout(3000);
+    await expect(page.locator('#logInModal')).not.toBeVisible();
     await expect(page.locator('#logout2')).toBeVisible();
 
 
@@ -48,7 +50,7 @@ test.describe('Demoblaze E-Commerce User Flow', () => {
 
     // Wait for products to load and click the first laptop
     const firstLaptop = page.locator('.card-title a').first();
-    await expect(firstLaptop).toBeVisible({ timeout: 1000 });
+    await expect(firstLaptop).toBeVisible({ timeout: 3000 });
     const laptopName = await firstLaptop.textContent();
     await firstLaptop.click();
 
@@ -58,7 +60,7 @@ test.describe('Demoblaze E-Commerce User Flow', () => {
 
     // Navigate to the Cart page via navbar
     await page.click('#cartur');
-    await expect(page.locator('.success-order, #page-wrapper')).toBeVisible();
+    await expect(page.locator('#page-wrapper')).toBeVisible();
 
     // Verify the item is listed in the cart table
     const cartItem = page.locator(`td:has-text("${laptopName?.trim()}")`);
